@@ -1,0 +1,28 @@
+{
+  "name": "pharma_medallion_pipeline",
+  "tasks": [
+    {
+      "task_key": "bronze_ingestion",
+      "spark_python_task": {
+        "python_file": "/Repos/bronze/ingest_patients.py"
+      },
+      "existing_cluster_id": "cluster-id"
+    },
+    {
+      "task_key": "silver_transformation",
+      "depends_on": [{ "task_key": "bronze_ingestion" }],
+      "spark_python_task": {
+        "python_file": "/Repos/silver/clean_patients.py"
+      },
+      "existing_cluster_id": "cluster-id"
+    },
+    {
+      "task_key": "gold_aggregation",
+      "depends_on": [{ "task_key": "silver_transformation" }],
+      "spark_python_task": {
+        "python_file": "/Repos/gold/patient_drug_analytics.py"
+      },
+      "existing_cluster_id": "cluster-id"
+    }
+  ]
+}
